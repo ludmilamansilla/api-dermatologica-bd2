@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Síntomas - API Dermatológica</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/sintomas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left"><div class="logo-nav"><i class="fas fa-heartbeat"></i><span>API Dermatológica</span></div></div>
+            <div class="navbar-center"><h1 class="navbar-title">Gestión de Síntomas</h1></div>
+            <div class="navbar-right">
+                <div class="user-menu">
+                    <div class="user-avatar"><i class="fas fa-user-md"></i></div>
+                    <div class="user-info"><span class="user-name" id="userName">Alumno</span><span class="user-role">Usuario</span></div>
+                    <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <span>/</span>
+                <span>Síntomas</span>
+            </nav>
+            
+            <div class="page-header">
+                <div class="header-content">
+                    <h2>Gestión de Síntomas</h2>
+                    <p>Administra los síntomas disponibles en el sistema</p>
+                </div>
+                <button class="btn btn-accent" onclick="openModal()">
+                    <i class="fas fa-plus"></i> Nuevo Síntoma
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchSintomas" class="form-control" placeholder="Buscar síntomas...">
+                </div>
+                
+                <div class="sintomas-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Síntoma</th>
+                                <th>Descripción</th>
+                                <th>Zona</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sintomasTableBody">
+                            <tr>
+                                <td><strong>Picazón intensa</strong></td>
+                                <td>Sensación persistente que provoca necesidad de rascado</td>
+                                <td><span class="badge badge-primary">Todas</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon-sm btn-edit" onclick="editSintoma(1)"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-icon-sm btn-delete" onclick="deleteSintoma(1)"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Enrojecimiento</strong></td>
+                                <td>Coloración rojiza de la piel debido a inflamación</td>
+                                <td><span class="badge badge-primary">Todas</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon-sm btn-edit" onclick="editSintoma(2)"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-icon-sm btn-delete" onclick="deleteSintoma(2)"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Descamación</strong></td>
+                                <td>Desprendimiento de células muertas de la piel</td>
+                                <td><span class="badge badge-primary">Todas</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon-sm btn-edit" onclick="editSintoma(3)"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-icon-sm btn-delete" onclick="deleteSintoma(3)"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal para Crear/Editar Síntoma -->
+    <div id="sintomaModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nuevo Síntoma</h3>
+                <button class="btn-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="sintomaForm">
+                <input type="hidden" id="sintomaId">
+                <div class="form-group">
+                    <label class="form-label">Nombre del Síntoma <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="nombreSintoma" required maxlength="100" placeholder="Ej: Picazón intensa">
+                    <small class="form-text">Ingrese un nombre descriptivo del síntoma</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <textarea class="form-control" id="descripcionSintoma" rows="3" maxlength="500" placeholder="Descripción detallada del síntoma..."></textarea>
+                    <small class="form-text">Máximo 500 caracteres</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Zona Afectada</label>
+                    <select class="form-control" id="zonaSintoma">
+                        <option value="todas">Todas las zonas</option>
+                        <option value="rostro">Rostro</option>
+                        <option value="cuero cabelludo">Cuero Cabelludo</option>
+                        <option value="cuello">Cuello</option>
+                        <option value="tronco">Tronco</option>
+                        <option value="brazos">Brazos</option>
+                        <option value="manos">Manos</option>
+                        <option value="piernas">Piernas</option>
+                        <option value="pies">Pies</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-accent" id="btnGuardarSintoma">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación para Eliminar -->
+    <div id="confirmModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header" style="background: var(--color-danger); color: white;">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
+                <button class="btn-close" onclick="closeConfirmModal()" style="color: white;"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="padding: 2rem;">
+                <p id="confirmMessage" style="font-size: 1.1rem; margin-bottom: 1.5rem;"></p>
+                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin-bottom: 1.5rem;">
+                    <p style="margin: 0; color: #856404;">
+                        <i class="fas fa-info-circle"></i> <strong>Advertencia:</strong> Esta acción no se puede deshacer.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" onclick="closeConfirmModal()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="button" class="btn" style="background: var(--color-danger);" onclick="confirmDelete()">
+                    <i class="fas fa-trash"></i> Sí, Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast"></div>
+    <script src="js/common.js"></script>
+    <script src="js/sintomas-api.js"></script>
+</body>
+</html>

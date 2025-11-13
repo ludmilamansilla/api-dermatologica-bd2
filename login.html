@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - API Dermatológica</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/login.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <!-- Ilustración de fondo -->
+        <div class="login-illustration">
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+        </div>
+        
+        <!-- Card de login -->
+        <div class="login-card">
+            <!-- Logo y encabezado -->
+            <div class="login-header">
+                <div class="logo-container">
+                    <i class="fas fa-heartbeat logo-icon"></i>
+                    <i class="fas fa-hand-holding-medical logo-icon-overlay"></i>
+                </div>
+                <h1 class="login-title">API Dermatológica</h1>
+                <p class="login-subtitle">Sistema de Diagnóstico Inteligente</p>
+            </div>
+            
+            <!-- Formulario de login -->
+            <form class="login-form" id="loginForm" action="dashboard.html">
+                <div class="form-group">
+                    <label class="form-label" for="username">Usuario</label>
+                    <div class="input-group">
+                        <i class="fas fa-user input-group-icon"></i>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="username" 
+                            name="username"
+                            placeholder="Ingrese su usuario"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">Contraseña</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock input-group-icon"></i>
+                        <input 
+                            type="password" 
+                            class="form-control" 
+                            id="password" 
+                            name="password"
+                            placeholder="Ingrese su contraseña"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember">
+                        <span>Recordarme</span>
+                    </label>
+                    <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-login">
+                    <span class="btn-text">Iniciar Sesión</span>
+                    <span class="spinner" style="display: none;"></span>
+                </button>
+            </form>
+            
+            <!-- Divider -->
+            <div class="divider">
+                <span>o</span>
+            </div>
+            
+            <!-- Información adicional -->
+            <div class="login-info">
+                <p class="info-text">
+                    <i class="fas fa-info-circle"></i>
+                    Acceso exclusivo para personal autorizado
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="login-footer">
+            <p>&copy; 2025 API Dermatológica. Sistema de diagnóstico médico.</p>
+            <div class="footer-links">
+                <a href="#">Términos de uso</a>
+                <span>·</span>
+                <a href="#">Privacidad</a>
+                <span>·</span>
+                <a href="#">Soporte</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast de notificaciones -->
+    <div id="toast" class="toast"></div>
+    
+    <script src="js/login.js"></script>
+</body>
+</html>

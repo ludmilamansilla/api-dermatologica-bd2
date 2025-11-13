@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - API Dermatológica</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <div class="logo-nav">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>API Dermatológica</span>
+                </div>
+            </div>
+            
+            <div class="navbar-center">
+                <h1 class="navbar-title">Sistema de Diagnóstico Inteligente</h1>
+            </div>
+            
+            <div class="navbar-right">
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Alumno</span>
+                        <span class="user-role">Usuario</span>
+                    </div>
+                    <button class="btn-logout" id="logoutBtn" title="Cerrar sesión">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Botón menú móvil -->
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-content">
+                    <h2>Bienvenido, <span id="welcomeUserName">Usuario</span></h2>
+                    <p>Gestiona diagnósticos dermatológicos de manera eficiente y profesional</p>
+                </div>
+                <div class="welcome-date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span id="currentDate"></span>
+                </div>
+            </section>
+            
+            <!-- Estadísticas rápidas -->
+            <section class="stats-section">
+                <div class="row">
+                    <div class="col col-4">
+                        <div class="stat-card card-primary">
+                            <div class="stat-icon">
+                                <i class="fas fa-notes-medical"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-number" id="statAfecciones">0</h3>
+                                <p class="stat-label">Afecciones Registradas</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col col-4">
+                        <div class="stat-card card-secondary">
+                            <div class="stat-icon">
+                                <i class="fas fa-stethoscope"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-number" id="statConsultas">0</h3>
+                                <p class="stat-label">Total Consultas</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col col-4">
+                        <div class="stat-card card-accent">
+                            <div class="stat-icon">
+                                <i class="fas fa-list-check"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-number" id="statSintomas">0</h3>
+                                <p class="stat-label">Síntomas en Base</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Acciones rápidas -->
+            <section class="actions-section">
+                <h3 class="section-title">Acciones Rápidas</h3>
+                <div class="row">
+                    <div class="col col-3">
+                        <a href="consulta.html" class="action-card card-nueva-consulta">
+                            <div class="action-icon">
+                                <i class="fas fa-stethoscope"></i>
+                            </div>
+                            <h4>Nueva Consulta</h4>
+                            <p>Realizar nuevo diagnóstico</p>
+                            <div class="action-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col col-3">
+                        <a href="afecciones.html" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-folder-medical"></i>
+                            </div>
+                            <h4>Gestionar Afecciones</h4>
+                            <p>Ver y editar afecciones</p>
+                            <div class="action-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="col col-3">
+                        <a href="sintomas.html" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-list-check"></i>
+                            </div>
+                            <h4>Gestionar Síntomas</h4>
+                            <p>Administrar síntomas</p>
+                            <div class="action-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Toast de notificaciones -->
+    <div id="toast" class="toast"></div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
+

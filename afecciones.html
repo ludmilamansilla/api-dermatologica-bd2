@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Afecciones - API Dermatológica</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/afecciones.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar (igual que dashboard) -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <div class="logo-nav">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>API Dermatológica</span>
+                </div>
+            </div>
+            
+            <div class="navbar-center">
+                <h1 class="navbar-title">Gestión de Afecciones</h1>
+            </div>
+            
+            <div class="navbar-right">
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Alumno</span>
+                        <span class="user-role">Usuario</span>
+                    </div>
+                    <button class="btn-logout" id="logoutBtn" title="Cerrar sesión">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <span>/</span>
+                <span>Afecciones</span>
+            </nav>
+            
+            <!-- Header con controles -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h2>Gestión de Afecciones Dermatológicas</h2>
+                    <p>Administra las afecciones registradas en el sistema</p>
+                </div>
+                <div class="header-actions">
+                    <a href="afeccion-form.html" class="btn btn-accent">
+                        <i class="fas fa-plus"></i>
+                        Nueva Afección
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Controles de búsqueda -->
+            <div class="controls-section card">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="form-control" 
+                        placeholder="Buscar por nombre de afección..."
+                    >
+                </div>
+                
+                <div class="filters">
+                    <button class="btn btn-outline" id="btnResetFilters">
+                        <i class="fas fa-redo"></i>
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Grid de afecciones -->
+            <div class="afecciones-grid" id="afeccionesGrid">
+                <!-- Las cards se cargarán dinámicamente desde la API -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- Toast de notificaciones -->
+    <div id="toast" class="toast"></div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/afecciones-api.js"></script>
+</body>
+</html>
