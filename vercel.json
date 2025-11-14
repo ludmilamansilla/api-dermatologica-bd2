@@ -4,6 +4,10 @@
     {
       "src": "api/vercel-server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "front/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -20,12 +24,20 @@
       "dest": "/front/public/css/$1"
     },
     {
+      "src": "/images/(.*)",
+      "dest": "/front/public/images/$1"
+    },
+    {
       "src": "/uploads/(.*)",
       "dest": "/front/public/uploads/$1"
     },
     {
       "src": "/js/(.*)",
       "dest": "/front/js/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "status": 204
     },
     {
       "src": "/(.*\\.html)",
