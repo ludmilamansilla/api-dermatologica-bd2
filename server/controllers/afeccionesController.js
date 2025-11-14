@@ -1,14 +1,7 @@
-// ================================================
-// CONTROLADOR DE AFECCIONES
-// ================================================
-
 import Afeccion from '../models/Afeccion.js';
 import path from 'path';
 import fs from 'fs/promises';
 
-// @desc    Obtener todas las afecciones
-// @route   GET /api/afecciones
-// @access  Private
 export const getAfecciones = async (req, res) => {
     try {
         const { search, zona, severidad, page = 1, limit = 12 } = req.query;
@@ -62,9 +55,6 @@ export const getAfecciones = async (req, res) => {
     }
 };
 
-// @desc    Obtener una afección por ID
-// @route   GET /api/afecciones/:id
-// @access  Private
 export const getAfeccionById = async (req, res) => {
     try {
         const afeccion = await Afeccion.findById(req.params.id)
@@ -90,9 +80,6 @@ export const getAfeccionById = async (req, res) => {
     }
 };
 
-// @desc    Crear una afección
-// @route   POST /api/afecciones
-// @access  Private
 export const createAfeccion = async (req, res) => {
     try {
         const { nombre, descripcion, severidad, zona, sintomas, tratamiento } = req.body;
@@ -141,9 +128,6 @@ export const createAfeccion = async (req, res) => {
     }
 };
 
-// @desc    Actualizar una afección
-// @route   PUT /api/afecciones/:id
-// @access  Private
 export const updateAfeccion = async (req, res) => {
     try {
         const afeccion = await Afeccion.findById(req.params.id);
@@ -196,9 +180,6 @@ export const updateAfeccion = async (req, res) => {
     }
 };
 
-// @desc    Eliminar una afección (soft delete)
-// @route   DELETE /api/afecciones/:id
-// @access  Private
 export const deleteAfeccion = async (req, res) => {
     try {
         const afeccion = await Afeccion.findById(req.params.id);
@@ -210,12 +191,12 @@ export const deleteAfeccion = async (req, res) => {
             });
         }
 
-        afeccion.activo = false;
-        await afeccion.save();
+        // Eliminar permanentemente de la base de datos
+        await Afeccion.findByIdAndDelete(req.params.id);
 
         res.json({
             success: true,
-            message: 'Afección eliminada exitosamente'
+            message: 'Afección eliminada exitosamente de la base de datos'
         });
     } catch (error) {
         console.error('Error eliminando afección:', error);

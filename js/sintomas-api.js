@@ -1,8 +1,3 @@
-// ================================================
-// SÍNTOMAS-API.JS - GESTIÓN COMPLETA DE SÍNTOMAS
-// ================================================
-
-// Variables globales
 let sintomaToDelete = null;
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -57,9 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarSintomas();
 });
 
-// ================================================
 // CARGAR Y RENDERIZAR SÍNTOMAS
-// ================================================
 
 async function cargarSintomas() {
     const searchInput = document.getElementById('searchSintomas');
@@ -158,9 +151,7 @@ function mostrarError(tbody, mensaje) {
     `;
 }
 
-// ================================================
 // MODAL CREAR/EDITAR
-// ================================================
 
 function openModal(sintoma = null) {
     const modal = document.getElementById('sintomaModal');
@@ -200,9 +191,7 @@ function closeModal() {
     }
 }
 
-// ================================================
 // EDITAR SÍNTOMA
-// ================================================
 
 async function editarSintoma(id) {
     try {
@@ -227,9 +216,7 @@ async function editarSintoma(id) {
     }
 }
 
-// ================================================
 // CREAR/ACTUALIZAR SÍNTOMA
-// ================================================
 
 async function handleSubmitSintoma(e) {
     e.preventDefault();
@@ -291,8 +278,8 @@ async function handleSubmitSintoma(e) {
         
         if (data && data.success) {
             const mensaje = sintomaId 
-                ? '✅ Síntoma actualizado exitosamente'
-                : '✅ Síntoma creado exitosamente';
+                ? 'Síntoma actualizado exitosamente'
+                : 'Síntoma creado exitosamente';
             
             AppUtils.showToast(mensaje, 'success');
             closeModal();
@@ -310,9 +297,7 @@ async function handleSubmitSintoma(e) {
     }
 }
 
-// ================================================
 // ELIMINAR SÍNTOMA
-// ================================================
 
 function mostrarConfirmacionEliminar(id, nombre) {
     sintomaToDelete = { id, nombre };
@@ -350,7 +335,7 @@ async function confirmDelete() {
         const data = await response.json();
         
         if (data && data.success) {
-            AppUtils.showToast(`✅ Síntoma "${nombre}" eliminado exitosamente`, 'success');
+            AppUtils.showToast(`Síntoma "${nombre}" eliminado exitosamente`, 'success');
             closeConfirmModal();
             cargarSintomas();
         } else {

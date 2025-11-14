@@ -1,12 +1,5 @@
-// ================================================
-// CONTROLADOR DE SÍNTOMAS
-// ================================================
-
 import Sintoma from '../models/Sintoma.js';
 
-// @desc    Obtener todos los síntomas
-// @route   GET /api/sintomas
-// @access  Private
 export const getSintomas = async (req, res) => {
     try {
         const { search, zona } = req.query;
@@ -70,9 +63,6 @@ export const getSintomaById = async (req, res) => {
     }
 };
 
-// @desc    Crear un síntoma
-// @route   POST /api/sintomas
-// @access  Private
 export const createSintoma = async (req, res) => {
     try {
         const { nombre, descripcion, zona } = req.body;
@@ -114,9 +104,6 @@ export const createSintoma = async (req, res) => {
     }
 };
 
-// @desc    Actualizar un síntoma
-// @route   PUT /api/sintomas/:id
-// @access  Private
 export const updateSintoma = async (req, res) => {
     try {
         const sintoma = await Sintoma.findById(req.params.id);
@@ -149,9 +136,6 @@ export const updateSintoma = async (req, res) => {
     }
 };
 
-// @desc    Eliminar un síntoma (soft delete)
-// @route   DELETE /api/sintomas/:id
-// @access  Private
 export const deleteSintoma = async (req, res) => {
     try {
         const sintoma = await Sintoma.findById(req.params.id);
@@ -163,18 +147,24 @@ export const deleteSintoma = async (req, res) => {
             });
         }
 
-        sintoma.activo = false;
-        await sintoma.save();
+        // Guardar nombre para el mensaje
+        const nombreSintoma = sintoma.nombre;
+        const idSintoma = sintoma._id;
+
+        // Eliminación física de la base de datos
+        await Sintoma.findByIdAndDelete(req.params.id);
+
+        console.log(`✅ Síntoma eliminado físicamente de MongoDB: ${nombreSintoma} (ID: ${idSintoma})`);
 
         res.json({
             success: true,
-            message: 'Síntoma eliminado exitosamente'
+            message: 'Síntoma eliminado exitosamente de la base de datos'
         });
     } catch (error) {
-        console.error('Error eliminando síntoma:', error);
+        console.error('❌ Error eliminando síntoma:', error);
         res.status(500).json({ 
             success: false,
-            message: 'Error eliminando síntoma' 
+            message: 'Error eliminando síntoma: ' + error.message 
         });
     }
 };

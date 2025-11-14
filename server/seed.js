@@ -1,7 +1,3 @@
-// ================================================
-// SEED DATA - DATOS INICIALES
-// ================================================
-
 import Usuario from './models/Usuario.js';
 import Sintoma from './models/Sintoma.js';
 import Afeccion from './models/Afeccion.js';
@@ -20,17 +16,11 @@ export const seedDatabase = async () => {
 
         console.log('🌱 Iniciando seed de la base de datos...');
 
-        // Crear usuario admin
-        const admin = await Usuario.create({
-            username: 'admin',
-            password: 'admin123',
-            role: 'admin'
-        });
 
         // Crear usuario alumno
         const alumno = await Usuario.create({
-            username: 'estudiante',
-            password: 'estudiante123',
+            username: 'alumno',
+            password: 'alu123',
             role: 'alumno'
         });
 
@@ -145,7 +135,7 @@ export const seedDatabase = async () => {
         console.log(`✨ Seed completado: ${usuarioCount} usuarios, ${sintomas.length} síntomas, ${afecciones.length} afecciones`);
 
     } catch (error) {
-        console.error('❌ Error en seed:', error);
+        console.error('Error en seed:', error);
         throw error;
     }
 };

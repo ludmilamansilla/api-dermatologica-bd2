@@ -507,3 +507,59 @@ select.form-control {
     font-size: var(--font-size-sm);
   }
 }
+
+/* Botones de iconos pequeños */
+.btn-icon-sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.btn-icon-sm:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-icon-sm:active {
+  transform: scale(0.95);
+}
+
+.btn-icon-sm i {
+  pointer-events: none;
+}
+
+.btn-edit {
+  background-color: var(--color-warning);
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #d68910;
+}
+
+.btn-view {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-view:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.btn-delete {
+  background-color: var(--color-danger);
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+}

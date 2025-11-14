@@ -1,14 +1,7 @@
-// ================================================
-// CONTROLADOR DE ESTADÍSTICAS
-// ================================================
-
 import Afeccion from '../models/Afeccion.js';
 import Sintoma from '../models/Sintoma.js';
 import Consulta from '../models/Consulta.js';
 
-// @desc    Obtener estadísticas para el dashboard
-// @route   GET /api/estadisticas
-// @access  Private
 export const getEstadisticas = async (req, res) => {
     try {
         const [
@@ -19,11 +12,12 @@ export const getEstadisticas = async (req, res) => {
         ] = await Promise.all([
             Afeccion.countDocuments({ activo: true }),
             Sintoma.countDocuments({ activo: true }),
-            Consulta.countDocuments({ usuario: req.usuario.id }),
-            Consulta.find({ usuario: req.usuario.id })
+            Consulta.countDocuments(), // Contar TODAS las consultas
+            Consulta.find()
                 .populate('diagnosticoPrincipal', 'nombre severidad')
+                .populate('usuario', 'username')
                 .sort({ createdAt: -1 })
-                .limit(5)
+                .limit(10) // Aumentar a 10 consultas recientes
         ]);
 
         res.json({
@@ -44,9 +38,6 @@ export const getEstadisticas = async (req, res) => {
     }
 };
 
-// @desc    Obtener distribución de severidad
-// @route   GET /api/estadisticas/severidad
-// @access  Private
 export const getDistribucionSeveridad = async (req, res) => {
     try {
         const distribucion = await Afeccion.aggregate([

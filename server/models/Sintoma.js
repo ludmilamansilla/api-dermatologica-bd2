@@ -1,7 +1,3 @@
-// ================================================
-// MODELO DE SÍNTOMA
-// ================================================
-
 import mongoose from 'mongoose';
 
 const sintomaSchema = new mongoose.Schema({

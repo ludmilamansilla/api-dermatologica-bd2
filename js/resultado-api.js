@@ -1,7 +1,3 @@
-// ================================================
-// RESULTADO.JS - MOSTRAR DIAGNÓSTICO (CON API REAL)
-// ================================================
-
 let consultaId = null;
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -98,11 +94,14 @@ function renderInfoPaciente(consulta) {
     const container = document.querySelector('.info-paciente');
     if (!container) return;
     
-    const fecha = new Date(consulta.fecha);
+    // Usar createdAt en lugar de fecha
+    const fecha = new Date(consulta.createdAt || consulta.fecha);
     const fechaFormateada = fecha.toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
     });
     
     container.innerHTML = `
@@ -198,12 +197,9 @@ function renderDiagnosticos(consulta) {
                                 <span class="badge badge-severidad badge-${diag.afeccion.severidad}">
                                     ${diag.afeccion.severidad}
                                 </span>
-                                <span class="badge badge-zona badge-${diag.afeccion.zona}">
-                                    ${diag.afeccion.zona}
-                                </span>
                                 <span class="sintomas-coincidencia">
                                     <i class="fas fa-check-double"></i>
-                                    ${diag.sintomasCoincidentes} síntomas coincidentes
+                                    ${Array.isArray(diag.sintomasCoincidentes) ? diag.sintomasCoincidentes.length : diag.sintomasCoincidentes || 0} síntomas coincidentes
                                 </span>
                             </div>
                             ${diag.afeccion.tratamiento ? `
@@ -255,6 +251,20 @@ function renderAnalisisIA(consulta) {
         return;
     }
     
+    // Extraer análisis visual si existe
+    let analisisVisual = '';
+    let confianzaVisual = '';
+    
+    if (analisisContent.includes('🔍 Análisis Visual:')) {
+        const visualMatch = analisisContent.match(/🔍 Análisis Visual:\n(.*?)\n\nConfianza del diagnóstico: (.*?)\n/s);
+        if (visualMatch) {
+            analisisVisual = visualMatch[1].trim();
+            confianzaVisual = visualMatch[2].trim();
+            // Remover del contenido principal para no duplicar
+            analisisContent = analisisContent.replace(/🔍 Análisis Visual:.*?Confianza del diagnóstico:.*?\n\n/s, '');
+        }
+    }
+    
     // Parsear el contenido
     const lines = analisisContent.split('\n');
     let explicacion = '';
@@ -290,6 +300,17 @@ function renderAnalisisIA(consulta) {
     container.innerHTML = `
         <h3><i class="fas ${iconoAnalisis}"></i> Análisis ${tipoAnalisis === 'IA' ? 'con Inteligencia Artificial' : 'Clínico'}</h3>
         <div class="ia-content">
+            ${analisisVisual ? `
+                <div class="ia-section analisis-visual-section">
+                    <h4><i class="fas fa-eye"></i> Análisis Visual con IA</h4>
+                    <p class="analisis-visual-text">${analisisVisual}</p>
+                    <div class="confianza-badge">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Confianza: <strong>${confianzaVisual}</strong></span>
+                    </div>
+                </div>
+            ` : ''}
+            
             ${explicacion ? `
                 <div class="ia-section">
                     <h4><i class="fas fa-lightbulb"></i> Análisis</h4>
@@ -350,23 +371,6 @@ function renderRecomendaciones(consulta) {
         mensaje = 'No se encontraron coincidencias significativas con las afecciones registradas. Consulte con un especialista para obtener un diagnóstico preciso.';
     }
     
-    container.innerHTML = `
-        <div class="recomendacion-final ${clase}">
-            <i class="fas ${icono}"></i>
-            <p>${mensaje}</p>
-        </div>
-        <div class="acciones-finales">
-            <button onclick="window.print()" class="btn btn-secondary">
-                <i class="fas fa-print"></i> Imprimir Resultados
-            </button>
-            <button onclick="window.location.href='consulta.html'" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Nueva Consulta
-            </button>
-            <button onclick="window.location.href='dashboard.html'" class="btn btn-outline">
-                <i class="fas fa-home"></i> Volver al Dashboard
-            </button>
-        </div>
-    `;
 }
 
 // Utilidades

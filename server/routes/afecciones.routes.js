@@ -1,7 +1,3 @@
-// ================================================
-// RUTAS DE AFECCIONES
-// ================================================
-
 import express from 'express';
 import {
     getAfecciones,
@@ -15,7 +11,7 @@ import upload from '../middleware/upload.js';
 
 const router = express.Router();
 
-router.use(proteger); // Todas las rutas requieren autenticación
+router.use(proteger); 
 
 router.route('/')
     .get(getAfecciones)

@@ -1,7 +1,3 @@
-// ================================================
-// MODELO DE CONSULTA/DIAGNÓSTICO
-// ================================================
-
 import mongoose from 'mongoose';
 
 const consultaSchema = new mongoose.Schema({

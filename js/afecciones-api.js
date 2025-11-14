@@ -1,6 +1,4 @@
-// ================================================
 // AFECCIONES-API.JS - GESTIÓN DE AFECCIONES
-// ================================================
 
 document.addEventListener('DOMContentLoaded', function() {
     // Verificar autenticación
@@ -45,9 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarAfecciones();
 });
 
-// ================================================
 // CARGAR Y RENDERIZAR AFECCIONES
-// ================================================
 
 async function cargarAfecciones() {
     const searchInput = document.getElementById('searchInput');
@@ -149,6 +145,10 @@ function renderizarAfecciones(afecciones) {
                         <i class="fas fa-edit"></i>
                         Editar
                     </a>
+                    <button class="btn btn-sm btn-danger" onclick="confirmarEliminar('${afeccion._id}', '${AppUtils.escapeHtml(afeccion.nombre)}')" title="Eliminar afección">
+                        <i class="fas fa-trash"></i>
+                        Eliminar
+                    </button>
                 </div>
             </div>
         `;
@@ -278,3 +278,211 @@ function mostrarModalDetalle(afeccion) {
         }
     });
 }
+
+// ================================================
+// ELIMINAR AFECCIÓN
+// ================================================
+
+// Variable global para almacenar el ID a eliminar
+let afeccionIdToDelete = null;
+
+// Confirmar eliminación
+function confirmarEliminar(id, nombre) {
+    afeccionIdToDelete = id;
+    
+    // Crear modal de confirmación
+    const modal = document.createElement('div');
+    modal.className = 'modal-backdrop';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    `;
+    
+    modal.innerHTML = `
+        <div class="modal-content" style="
+            max-width: 520px;
+            width: 90%;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: slideDown 0.3s ease;
+            position: relative;
+        ">
+            <div class="modal-header" style="
+                background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                color: white;
+                padding: 1.75rem 2rem;
+                border-bottom: none;
+            ">
+                <h3 style="
+                    margin: 0;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    font-size: 1.4rem;
+                    font-weight: 600;
+                ">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 1.6rem;"></i>
+                    Confirmar Eliminación
+                </h3>
+            </div>
+            <div class="modal-body" style="
+                padding: 2rem;
+                background: #ffffff;
+            ">
+                <p style="
+                    font-size: 1.1rem;
+                    margin-bottom: 1.25rem;
+                    color: #2c3e50;
+                    line-height: 1.6;
+                ">
+                    ¿Está seguro que desea eliminar la siguiente afección?
+                </p>
+                <div style="
+                    background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+                    border-left: 5px solid #ffc107;
+                    padding: 1.25rem;
+                    border-radius: 8px;
+                    margin-bottom: 1.5rem;
+                    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+                ">
+                    <strong style="
+                        color: #856404;
+                        font-size: 1.15rem;
+                        display: block;
+                        font-weight: 600;
+                    ">
+                        <i class="fas fa-notes-medical" style="margin-right: 0.5rem;"></i>
+                        ${AppUtils.escapeHtml(nombre)}
+                    </strong>
+                </div>
+                <div style="
+                    background: linear-gradient(135deg, #ffe5e5 0%, #ffd6d6 100%);
+                    border-left: 5px solid #e74c3c;
+                    padding: 1rem 1.25rem;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.15);
+                ">
+                    <p style="
+                        color: #c0392b;
+                        font-size: 1rem;
+                        margin: 0;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        font-weight: 500;
+                    ">
+                        <i class="fas fa-exclamation-circle" style="font-size: 1.2rem;"></i>
+                        Esta acción eliminará permanentemente la afección y no se puede deshacer.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-actions" style="
+                padding: 1.5rem 2rem;
+                background: #f8f9fa;
+                display: flex;
+                gap: 1rem;
+                justify-content: flex-end;
+                border-top: 1px solid #e9ecef;
+            ">
+                <button class="btn btn-outline" onclick="cancelarEliminacion()" style="
+                    padding: 0.75rem 1.5rem;
+                    font-size: 1rem;
+                    font-weight: 500;
+                    border: 2px solid #6c757d;
+                    color: #6c757d;
+                    background: white;
+                    transition: all 0.3s ease;
+                ">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button class="btn btn-danger" onclick="ejecutarEliminacion()" style="
+                    padding: 0.75rem 1.5rem;
+                    font-size: 1rem;
+                    font-weight: 500;
+                    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                    border: none;
+                    color: white;
+                    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+                    transition: all 0.3s ease;
+                ">
+                    <i class="fas fa-trash"></i> Eliminar Permanentemente
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Cerrar modal al hacer clic fuera
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            cancelarEliminacion();
+        }
+    });
+}
+
+// Cancelar eliminación
+function cancelarEliminacion() {
+    afeccionIdToDelete = null;
+    const modal = document.querySelector('.modal-backdrop');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Ejecutar eliminación
+async function ejecutarEliminacion() {
+    if (!afeccionIdToDelete) return;
+    
+    try {
+        // Cerrar modal
+        const modal = document.querySelector('.modal-backdrop');
+        if (modal) {
+            modal.remove();
+        }
+        
+        // Mostrar loading
+        AppUtils.showToast('Eliminando afección...', 'info');
+        
+        const response = await fetch(`${AppUtils.API_URL}/afecciones/${afeccionIdToDelete}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${AppUtils.getToken()}`
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data && data.success) {
+            AppUtils.showToast('Afección eliminada exitosamente', 'success');
+            // Recargar la lista de afecciones
+            cargarAfecciones();
+        } else {
+            AppUtils.showToast(data.message || 'Error al eliminar la afección', 'error');
+        }
+    } catch (error) {
+        console.error('Error eliminando afección:', error);
+        AppUtils.showToast('Error de conexión al eliminar la afección', 'error');
+    } finally {
+        afeccionIdToDelete = null;
+    }
+}
+
+// Hacer las funciones globales
+window.confirmarEliminar = confirmarEliminar;
+window.cancelarEliminacion = cancelarEliminacion;
+window.ejecutarEliminacion = ejecutarEliminacion;

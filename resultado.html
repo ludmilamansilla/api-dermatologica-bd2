@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultado del Diagnóstico - API Dermatológica</title>
+    <title>Resultado del Diagnóstico - DermaTech</title>
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/dashboard.css">
@@ -13,7 +13,7 @@
 <body>
     <nav class="navbar">
         <div class="navbar-container">
-            <div class="navbar-left"><div class="logo-nav"><i class="fas fa-heartbeat"></i><span>API Dermatológica</span></div></div>
+            <div class="navbar-left"><div class="logo-nav"><i class="fas fa-heartbeat"></i><span>DermaTech</span></div></div>
             <div class="navbar-center"><h1 class="navbar-title">Resultado del Diagnóstico</h1></div>
             <div class="navbar-right">
                 <div class="user-menu">
@@ -26,84 +26,44 @@
     </nav>
     
     <main class="main-content">
-        <div class="container" style="max-width: 1000px;">
+        <div class="container" style="max-width: 1200px;">
+            <!-- Hero Section -->
             <div class="hero-section">
                 <div class="hero-icon"><i class="fas fa-check-circle"></i></div>
                 <h2>Diagnóstico Completado</h2>
-                <p>Se han identificado las siguientes posibles afecciones</p>
+                <p>Se ha completado el análisis de su consulta</p>
             </div>
             
-            <div class="resultados-grid">
-                <div class="resultado-card resultado-principal">
-                    <div class="resultado-header">
-                        <img src="https://via.placeholder.com/100/5FD4A6/ffffff?text=DA" alt="Dermatitis">
-                        <div class="resultado-info">
-                            <h4>Dermatitis Atópica</h4>
-                            <span class="badge badge-moderada">Moderada</span>
-                        </div>
-                    </div>
-                    <div class="progress-circle">
-                        <svg viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="8"/>
-                            <circle cx="50" cy="50" r="45" fill="none" stroke="#5FD4A6" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="56" stroke-linecap="round" transform="rotate(-90 50 50)"/>
-                        </svg>
-                        <div class="progress-text">80%</div>
-                    </div>
-                    <p class="resultado-descripcion">Inflamación crónica de la piel caracterizada por enrojecimiento, picazón intensa y sequedad.</p>
-                    <button class="btn btn-primary btn-block" onclick="window.location='afeccion-detalle.html?id=1'">
-                        <i class="fas fa-info-circle"></i> Ver Información Completa
-                    </button>
-                </div>
-                
-                <div class="resultado-card">
-                    <div class="resultado-header">
-                        <img src="https://via.placeholder.com/80/4A9EBF/ffffff?text=E" alt="Eczema">
-                        <div class="resultado-info">
-                            <h5>Eczema</h5>
-                            <span class="badge badge-moderada">Moderada</span>
-                        </div>
-                    </div>
-                    <div class="mini-progress"><div class="progress-bar" style="width: 65%">65%</div></div>
-                    <p class="texto-sm">Condición que hace que la piel se enrojezca, pique y se inflame.</p>
-                </div>
-                
-                <div class="resultado-card">
-                    <div class="resultado-header">
-                        <img src="https://via.placeholder.com/80/FF9F66/ffffff?text=PS" alt="Psoriasis">
-                        <div class="resultado-info">
-                            <h5>Psoriasis</h5>
-                            <span class="badge badge-grave">Grave</span>
-                        </div>
-                    </div>
-                    <div class="mini-progress"><div class="progress-bar" style="width: 45%">45%</div></div>
-                    <p class="texto-sm">Enfermedad autoinmune que acelera el ciclo de vida de las células.</p>
-                </div>
+            <!-- Información del Paciente -->
+            <div class="card info-paciente">
+                <!-- Se llenará dinámicamente -->
             </div>
             
-            <div class="info-sections">
-                <div class="card">
-                    <h4><i class="fas fa-clipboard-list"></i> Síntomas Reportados</h4>
-                    <div class="sintomas-reportados">
-                        <span class="badge badge-primary">Picazón intensa</span>
-                        <span class="badge badge-primary">Enrojecimiento</span>
-                        <span class="badge badge-primary">Sequedad</span>
-                        <span class="badge badge-primary">Descamación</span>
-                    </div>
-                </div>
-                
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div>
-                        <strong>Recomendación Importante</strong>
-                        <p>Este es un diagnóstico preliminar. Se recomienda consultar con un dermatólogo profesional para un diagnóstico definitivo y tratamiento adecuado.</p>
-                    </div>
-                </div>
+            <!-- Imagen de la zona (si existe) -->
+            <div class="card imagen-zona" style="display: none;">
+                <!-- Se llenará dinámicamente -->
             </div>
             
+            <!-- Síntomas Reportados -->
+            <div class="card sintomas-reportados">
+                <!-- Se llenará dinámicamente -->
+            </div>
+            
+            <!-- Análisis con IA o Clínico -->
+            <div class="card analisis-ia" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <!-- Se llenará dinámicamente -->
+            </div>
+            
+            <!-- Diagnósticos Posibles -->
+            <div class="card diagnosticos-posibles">
+                <!-- Se llenará dinámicamente -->
+            </div>
+            
+                <!-- Se llenará dinámicamente -->
+            </div>
+            
+            <!-- Acciones Finales -->
             <div class="acciones-finales">
-                <button class="btn btn-outline" onclick="window.print()">
-                    <i class="fas fa-download"></i> Descargar PDF
-                </button>
                 <button class="btn btn-accent" onclick="window.location='consulta.html'">
                     <i class="fas fa-plus"></i> Nueva Consulta
                 </button>

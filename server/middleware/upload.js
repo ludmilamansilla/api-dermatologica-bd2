@@ -1,7 +1,3 @@
-// ================================================
-// MIDDLEWARE DE UPLOAD (MULTER)
-// ================================================
-
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -44,7 +40,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB
+        fileSize: 5 * 1024 * 1024 
     },
     fileFilter: fileFilter
 });

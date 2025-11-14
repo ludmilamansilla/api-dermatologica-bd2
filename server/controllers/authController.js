@@ -1,7 +1,3 @@
-// ================================================
-// CONTROLADOR DE AUTENTICACIÓN
-// ================================================
-
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/Usuario.js';
 
@@ -12,9 +8,6 @@ const generarToken = (id) => {
     });
 };
 
-// @desc    Login de usuario
-// @route   POST /api/auth/login
-// @access  Public
 export const login = async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -68,9 +61,6 @@ export const login = async (req, res) => {
     }
 };
 
-// @desc    Obtener perfil de usuario
-// @route   GET /api/auth/perfil
-// @access  Private
 export const getPerfil = async (req, res) => {
     try {
         const usuario = await Usuario.findById(req.usuario.id);
@@ -95,9 +85,6 @@ export const getPerfil = async (req, res) => {
     }
 };
 
-// @desc    Logout (cliente maneja el token)
-// @route   POST /api/auth/logout
-// @access  Private
 export const logout = async (req, res) => {
     res.json({
         success: true,

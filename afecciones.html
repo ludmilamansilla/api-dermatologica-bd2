@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Afecciones - API Dermatológica</title>
+    <title>Gestión de Afecciones - DermaTech</title>
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/dashboard.css">
@@ -11,13 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navbar (igual que dashboard) -->
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-left">
                 <div class="logo-nav">
                     <i class="fas fa-heartbeat"></i>
-                    <span>API Dermatológica</span>
+                    <span>DermaTech</span>
                 </div>
             </div>
             
@@ -46,17 +45,14 @@
         </div>
     </nav>
     
-    <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Breadcrumb -->
             <nav class="breadcrumb">
                 <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
                 <span>/</span>
                 <span>Afecciones</span>
             </nav>
             
-            <!-- Header con controles -->
             <div class="page-header">
                 <div class="header-content">
                     <h2>Gestión de Afecciones Dermatológicas</h2>
@@ -70,7 +66,6 @@
                 </div>
             </div>
             
-            <!-- Controles de búsqueda -->
             <div class="controls-section card">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
@@ -90,14 +85,11 @@
                 </div>
             </div>
             
-            <!-- Grid de afecciones -->
             <div class="afecciones-grid" id="afeccionesGrid">
-                <!-- Las cards se cargarán dinámicamente desde la API -->
             </div>
         </div>
     </main>
     
-    <!-- Toast de notificaciones -->
     <div id="toast" class="toast"></div>
     
     <script src="js/common.js"></script>

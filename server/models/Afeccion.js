@@ -1,7 +1,3 @@
-// ================================================
-// MODELO DE AFECCIÓN
-// ================================================
-
 import mongoose from 'mongoose';
 
 const afeccionSchema = new mongoose.Schema({

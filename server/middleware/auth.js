@@ -1,7 +1,3 @@
-// ================================================
-// MIDDLEWARE DE AUTENTICACIÓN
-// ================================================
-
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/Usuario.js';
 
@@ -39,18 +35,6 @@ export const proteger = async (req, res, next) => {
         return res.status(401).json({ 
             success: false,
             message: 'No hay token, autorización denegada' 
-        });
-    }
-};
-
-// Middleware para verificar rol de admin
-export const esAdmin = (req, res, next) => {
-    if (req.usuario && req.usuario.role === 'admin') {
-        next();
-    } else {
-        res.status(403).json({ 
-            success: false,
-            message: 'Acceso denegado. Se requiere rol de administrador' 
         });
     }
 };

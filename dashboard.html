@@ -3,26 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - API Dermatológica</title>
+    <title>Dashboard - DermaTech</title>
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-left">
                 <div class="logo-nav">
                     <i class="fas fa-heartbeat"></i>
-                    <span>API Dermatológica</span>
+                    <span>DermaTech</span>
                 </div>
             </div>
-            
-            <div class="navbar-center">
-                <h1 class="navbar-title">Sistema de Diagnóstico Inteligente</h1>
-            </div>
+        
             
             <div class="navbar-right">
                 <div class="user-menu">
@@ -39,17 +35,14 @@
                 </div>
             </div>
             
-            <!-- Botón menú móvil -->
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </nav>
     
-    <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Welcome Section -->
             <section class="welcome-section">
                 <div class="welcome-content">
                     <h2>Bienvenido, <span id="welcomeUserName">Usuario</span></h2>
@@ -61,7 +54,6 @@
                 </div>
             </section>
             
-            <!-- Estadísticas rápidas -->
             <section class="stats-section">
                 <div class="row">
                     <div class="col col-4">
@@ -102,7 +94,6 @@
                 </div>
             </section>
             
-            <!-- Acciones rápidas -->
             <section class="actions-section">
                 <h3 class="section-title">Acciones Rápidas</h3>
                 <div class="row">
@@ -122,7 +113,7 @@
                     <div class="col col-3">
                         <a href="afecciones.html" class="action-card">
                             <div class="action-icon">
-                                <i class="fas fa-folder-medical"></i>
+                                <i class="fas fa-notes-medical"></i>
                             </div>
                             <h4>Gestionar Afecciones</h4>
                             <p>Ver y editar afecciones</p>
@@ -146,10 +137,67 @@
                     </div>
                 </div>
             </section>
+            
+            <!-- Sección de Consultas Recientes -->
+            <section class="recent-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-history"></i> Consultas Recientes
+                    </h3>
+                </div>
+                <div class="card">
+                    <div class="recent-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Paciente</th>
+                                    <th>Diagnóstico</th>
+                                    <th>Severidad</th>
+                                    <th>Fecha</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="consultasTableBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 2rem;">
+                                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--color-primary);"></i>
+                                        <p style="margin-top: 1rem; color: var(--color-text-light);">Cargando consultas...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
     
-    <!-- Toast de notificaciones -->
+    <!-- Modal de confirmación para eliminar -->
+    <div id="confirmDeleteModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--color-danger);"></i>
+                    Confirmar Eliminación
+                </h3>
+                <button class="btn-close" onclick="cerrarModalConfirmacion()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmDeleteMessage" style="font-size: 1rem; color: var(--color-text-primary); margin-bottom: 1.5rem;">
+                    ¿Está seguro que desea eliminar esta consulta?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalConfirmacion()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button class="btn btn-danger" id="btnConfirmarEliminar">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <div id="toast" class="toast"></div>
     
     <script src="js/common.js"></script>

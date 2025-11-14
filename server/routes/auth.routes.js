@@ -1,7 +1,3 @@
-// ================================================
-// RUTAS DE AUTENTICACIÓN
-// ================================================
-
 import express from 'express';
 import { login, getPerfil, logout } from '../controllers/authController.js';
 import { proteger } from '../middleware/auth.js';

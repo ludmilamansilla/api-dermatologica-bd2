@@ -1,7 +1,3 @@
-// ================================================
-// RUTAS DE ESTADÍSTICAS
-// ================================================
-
 import express from 'express';
 import {
     getEstadisticas,
@@ -11,7 +7,7 @@ import { proteger } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.use(proteger); // Todas las rutas requieren autenticación
+router.use(proteger); 
 
 router.get('/', getEstadisticas);
 router.get('/severidad', getDistribucionSeveridad);
