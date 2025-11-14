@@ -204,6 +204,35 @@ function renderDiagnosticos(consulta) {
     const container = document.querySelector('.diagnosticos-posibles');
     if (!container) return;
     
+    const tieneImagen = !!consulta.imagenZona;
+    const notas = consulta.notas || '';
+    
+    // Verificar si hubo análisis IA exitoso
+    // El análisis es exitoso si contiene "--- Análisis IA ---" y NO es un error
+    // Un error puede ser:
+    // 1. "--- Análisis IA (Error) ---" (error crítico)
+    // 2. Contiene "sobrecargado" en las notas (servicio sobrecargado)
+    // 3. El diagnóstico contiene "Análisis no disponible" (cualquier error del servicio)
+    const tieneAnalisisIAExitoso = notas.includes('--- Análisis IA ---') && 
+                                   !notas.includes('--- Análisis IA (Error) ---') &&
+                                   !notas.toLowerCase().includes('sobrecargado') &&
+                                   !notas.includes('Diagnóstico: Análisis no disponible') &&
+                                   !notas.includes('Diagnóstico:Análisis no disponible');
+    
+    // Mostrar diagnósticos SOLO si:
+    //  NO hay imagen subida
+    // O si hay imagen pero NO se hizo la lectura de la imagen por IA (error o sobrecarga)
+    const debeMostrarDiagnosticos = !tieneImagen || (tieneImagen && !tieneAnalisisIAExitoso);
+    
+    if (!debeMostrarDiagnosticos) {
+        // Ocultar la sección si no debe mostrarse
+        container.style.display = 'none';
+        return;
+    }
+    
+    // Mostrar la sección
+    container.style.display = 'block';
+    
     const diagnosticos = consulta.resultados || [];
     
     // Ordenar por porcentaje
