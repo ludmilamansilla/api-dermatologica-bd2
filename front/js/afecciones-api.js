@@ -116,7 +116,7 @@ function renderizarAfecciones(afecciones) {
         
         // URL de la imagen (si existe) o placeholder
         const imagenUrl = afeccion.imagen 
-            ? `http://localhost:3000${afeccion.imagen}`
+            ? AppUtils.getImageUrl(afeccion.imagen)
             : `https://via.placeholder.com/300x200/5FD4A6/ffffff?text=${encodeURIComponent(afeccion.nombre)}`;
         
         return `
@@ -206,7 +206,7 @@ function mostrarModalDetalle(afeccion) {
     // Preparar imagen si existe
     const imagenHTML = afeccion.imagen 
         ? `<div style="margin-bottom: 1.5rem;">
-               <img src="http://localhost:3000${afeccion.imagen}" 
+               <img src="${AppUtils.getImageUrl(afeccion.imagen)}" 
                     alt="${AppUtils.escapeHtml(afeccion.nombre)}"
                     style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
                     onerror="this.style.display='none'">

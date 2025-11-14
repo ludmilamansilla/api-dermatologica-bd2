@@ -2,6 +2,7 @@ import Afeccion from '../models/Afeccion.js';
 import path from 'path';
 import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
+import { uploadToCloudinary, deleteFromCloudinary } from '../middleware/upload-cloudinary.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -105,6 +106,17 @@ export const createAfeccion = async (req, res) => {
             });
         }
 
+        // Subir imagen a Cloudinary si existe
+        let imagenUrl = null;
+        if (req.file) {
+            try {
+                imagenUrl = await uploadToCloudinary(req.file.buffer, 'afecciones');
+                console.log('Imagen de afección subida a Cloudinary:', imagenUrl);
+            } catch (error) {
+                console.error('Error subiendo imagen a Cloudinary:', error);
+            }
+        }
+
         // Crear afección
         const afeccion = await Afeccion.create({
             nombre,
@@ -113,7 +125,7 @@ export const createAfeccion = async (req, res) => {
             zona: zona || 'todas',
             sintomas: sintomas ? JSON.parse(sintomas) : [],
             tratamiento,
-            imagen: req.file ? `/uploads/${req.file.filename}` : null
+            imagen: imagenUrl // URL de Cloudinary o null
         });
 
         const afeccionPopulada = await Afeccion.findById(afeccion._id)
@@ -153,18 +165,35 @@ export const updateAfeccion = async (req, res) => {
         if (sintomas) afeccion.sintomas = JSON.parse(sintomas);
         if (tratamiento) afeccion.tratamiento = tratamiento;
         
-        // Si hay nueva imagen, eliminar la anterior y guardar la nueva
+        // Si hay nueva imagen, eliminar la anterior de Cloudinary y subir la nueva
         if (req.file) {
-            if (afeccion.imagen) {
-                // Construir ruta absoluta correcta a la imagen antigua
+            // Eliminar imagen anterior de Cloudinary si existe
+            if (afeccion.imagen && afeccion.imagen.includes('cloudinary.com')) {
+                try {
+                    await deleteFromCloudinary(afeccion.imagen);
+                    console.log('Imagen anterior eliminada de Cloudinary');
+                } catch (err) {
+                    console.log('Error eliminando imagen anterior de Cloudinary:', err);
+                }
+            } else if (afeccion.imagen) {
+                // Si es una imagen local antigua, intentar eliminar del sistema de archivos
                 const imagenPath = path.join(__dirname, '..', '..', 'front', 'public', afeccion.imagen);
                 try {
                     await fs.unlink(imagenPath);
                 } catch (err) {
-                    console.log('Error eliminando imagen anterior:', err);
+                    console.log('Error eliminando imagen local anterior:', err);
                 }
             }
-            afeccion.imagen = `/uploads/${req.file.filename}`;
+            
+            // Subir nueva imagen a Cloudinary
+            try {
+                const nuevaImagenUrl = await uploadToCloudinary(req.file.buffer, 'afecciones');
+                afeccion.imagen = nuevaImagenUrl;
+                console.log('Nueva imagen subida a Cloudinary:', nuevaImagenUrl);
+            } catch (error) {
+                console.error('Error subiendo nueva imagen a Cloudinary:', error);
+                // No actualizar la imagen si falla el upload
+            }
         }
 
         await afeccion.save();
@@ -211,3 +240,4 @@ export const deleteAfeccion = async (req, res) => {
         });
     }
 };
+

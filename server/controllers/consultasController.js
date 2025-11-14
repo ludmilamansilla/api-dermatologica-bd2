@@ -4,6 +4,7 @@ import Sintoma from '../models/Sintoma.js';
 import { analizarImagenDermatologica } from '../services/geminiService.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { uploadToCloudinary } from '../middleware/upload-cloudinary.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -77,6 +78,27 @@ export const createConsulta = async (req, res) => {
         // Tomar solo los top 5
         const topResultados = resultados.slice(0, 5);
 
+        // Subir imagen a Cloudinary si existe (ANTES del análisis IA)
+        let imagenUrl = null;
+        let rutaImagen = null;
+        
+        if (req.file) {
+            try {
+                // Subir a Cloudinary
+                imagenUrl = await uploadToCloudinary(req.file.buffer, 'consultas');
+                console.log('Imagen subida a Cloudinary:', imagenUrl);
+                
+                // Para el análisis de IA, necesitamos el buffer directamente
+                // ya que Gemini puede trabajar con base64
+                rutaImagen = req.file.buffer; // Pasar buffer en lugar de ruta
+            } catch (error) {
+                console.error('Error subiendo imagen a Cloudinary:', error);
+                // Continuar sin imagen si falla el upload
+                imagenUrl = null;
+                rutaImagen = null;
+            }
+        }
+
         // Obtener análisis con IA (Gemini)
         let analisisIA = null;
         let notasFinales = notas || '';
@@ -90,11 +112,6 @@ export const createConsulta = async (req, res) => {
             const nombres = sintomasNombres.map(s => s.nombre);
 
             console.log('Iniciando análisis IA unificado...');
-            
-            // Construir ruta absoluta a la imagen
-            const rutaImagen = req.file 
-                ? path.join(__dirname, '..', '..', 'front', 'public', 'uploads', req.file.filename)
-                : null;
             
             // Llamada al servicio de IA. 
             analisisIA = await analizarImagenDermatologica({
@@ -133,7 +150,7 @@ export const createConsulta = async (req, res) => {
             resultados: topResultados,
             diagnosticoPrincipal: topResultados.length > 0 ? topResultados[0].afeccion : null,
             usuario: req.usuario.id,
-            imagenZona: req.file ? `/uploads/${req.file.filename}` : null,
+            imagenZona: imagenUrl, // URL de Cloudinary o null
             notas: notasFinales,
             estado: 'completado'
         });

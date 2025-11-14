@@ -271,7 +271,7 @@ function cerrarModalConfirmacion() {
 
 // Mostrar imagen en modal
 function mostrarImagenModal(rutaImagen) {
-    const imageUrl = `http://localhost:3000${rutaImagen}`;
+    const imageUrl = AppUtils.getImageUrl(rutaImagen);
     
     // Crear modal dinámicamente si no existe
     let modal = document.getElementById('imagenModal');

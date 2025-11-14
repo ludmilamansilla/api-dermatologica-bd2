@@ -133,10 +133,12 @@ function renderImagenZona(consulta) {
         return;
     }
     
+    const imageUrl = AppUtils.getImageUrl(consulta.imagenZona);
+    
     container.innerHTML = `
         <h3><i class="fas fa-camera"></i> Imagen de la Zona Afectada</h3>
         <div class="imagen-container">
-            <img src="http://localhost:3000${consulta.imagenZona}" alt="Zona afectada">
+            <img src="${imageUrl}" alt="Zona afectada">
         </div>
     `;
 }
@@ -183,7 +185,7 @@ function renderSintomasEImagen(consulta) {
                 <div id="contenedor-imagen" style="display: none; padding-left: var(--space-3);">
                     ${tieneImagen ? `
                         <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <img src="http://localhost:3000${consulta.imagenZona}" alt="Imagen de consulta" style="max-width: 100%; height: auto; border-radius: var(--radius-lg); max-height: 300px; object-fit: contain;">
+                            <img src="${AppUtils.getImageUrl(consulta.imagenZona)}" alt="Imagen de consulta" style="max-width: 100%; height: auto; border-radius: var(--radius-lg); max-height: 300px; object-fit: contain;">
                             <button class="btn btn-accent" onclick="mostrarImagenModal('${consulta.imagenZona}')" style="display: inline-flex; align-items: center; gap: 0.5rem; width: fit-content; justify-content: center;">
                                 <i class="fas fa-expand"></i> Ver
                             </button>
@@ -451,7 +453,7 @@ function toggleImagen(button) {
 
 // Mostrar imagen en modal
 function mostrarImagenModal(rutaImagen) {
-    const imageUrl = `http://localhost:3000${rutaImagen}`;
+    const imageUrl = AppUtils.getImageUrl(rutaImagen);
     
     // Crear modal dinámicamente
     let modal = document.getElementById('imagenModal');

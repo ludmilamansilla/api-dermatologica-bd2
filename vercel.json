@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/vercel-server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/vercel-server.js"
+    },
+    {
+      "src": "/public/(.*)",
+      "dest": "/front/public/$1"
+    },
+    {
+      "src": "/css/(.*)",
+      "dest": "/front/public/css/$1"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "/front/public/uploads/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/front/js/$1"
+    },
+    {
+      "src": "/(.*\\.html)",
+      "dest": "/front/html/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/front/html/login.html"
+    }
+  ]
+}
+

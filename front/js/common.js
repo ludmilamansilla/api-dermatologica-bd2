@@ -1,7 +1,24 @@
 // FUNCIONES COMUNES
 
-// URL de la API
-const API_URL = 'http://localhost:3000/api';
+// URL de la API (dinámico según el entorno)
+const API_URL = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')
+    ? 'http://localhost:3000/api'
+    : '/api';
+
+// Función helper para obtener la URL completa de una imagen
+function getImageUrl(imagePath) {
+    if (!imagePath) return '';
+    // Si ya es una URL completa (http/https), usarla tal cual
+    if (imagePath.startsWith('http')) return imagePath;
+    // Si es una URL de Cloudinary, usarla tal cual
+    if (imagePath.includes('cloudinary.com') || imagePath.includes('res.cloudinary.com')) return imagePath;
+    // En desarrollo, usar localhost:3000
+    if (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')) {
+        return `http://localhost:3000${imagePath}`;
+    }
+    // En producción, usar ruta relativa
+    return imagePath;
+}
 
 // Verificar autenticación
 function checkAuth() {
@@ -274,6 +291,7 @@ function getToken() {
 // Exportar
 window.AppUtils = {
     API_URL,
+    getImageUrl,
     checkAuth,
     showToast,
     formatDate,

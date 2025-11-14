@@ -146,7 +146,7 @@ function renderImagen(afeccion) {
     
     if (afeccion.imagen) {
         container.innerHTML = `
-            <img src="http://localhost:3000${afeccion.imagen}" alt="${afeccion.nombre}">
+            <img src="${AppUtils.getImageUrl(afeccion.imagen)}" alt="${afeccion.nombre}">
         `;
     } else {
         container.innerHTML = `

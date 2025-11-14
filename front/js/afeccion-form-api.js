@@ -243,7 +243,7 @@ async function cargarAfeccion() {
                 const previewImg = document.getElementById('previewImg');
                 const uploadArea = document.getElementById('uploadArea');
                 
-                previewImg.src = `http://localhost:3000${afeccion.imagen}`;
+                previewImg.src = AppUtils.getImageUrl(afeccion.imagen);
                 imagePreview.style.display = 'block';
                 uploadArea.style.display = 'none';
             }
