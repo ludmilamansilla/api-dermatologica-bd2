@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Afección - DermaTech</title>
+    <link rel="icon" type="image/svg+xml" href="/heartbeat.svg">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/detalle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <div class="logo-nav">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>DermaTech</span>
+                </div>
+            </div>
+            <div class="navbar-center">
+                <h1 class="navbar-title">Detalle de Afección</h1>
+            </div>
+            <div class="navbar-right">
+                <div class="user-menu">
+                    <div class="user-avatar"><i class="fas fa-user-md"></i></div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Alumno</span>
+                        <span class="user-role">Usuario</span>
+                    </div>
+                    <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="container" style="max-width: 1100px;">
+            <nav class="breadcrumb">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <span>/</span>
+                <a href="afecciones.html">Afecciones</a>
+                <span>/</span>
+                <span>Dermatitis Atópica</span>
+            </nav>
+            
+            <div class="detalle-container">
+                <div class="detalle-image-col">
+                    <div class="detalle-image-card card">
+                        <img src="https://via.placeholder.com/500x400/5FD4A6/ffffff?text=Dermatitis+Atopica" alt="Dermatitis Atópica">
+                    </div>
+                    <div class="detalle-actions">
+                        <button class="btn btn-primary btn-block" onclick="window.location='afeccion-form.html?id=1'">
+                            <i class="fas fa-edit"></i>
+                            Editar Afección
+                        </button>
+                        <button class="btn btn-outline btn-block" onclick="window.history.back()">
+                            <i class="fas fa-arrow-left"></i>
+                            Volver
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="detalle-content-col">
+                    <div class="card">
+                        <div class="detalle-header">
+                            <h2>Dermatitis Atópica</h2>
+                            <span class="badge badge-moderada">Moderada</span>
+                        </div>
+                        
+                        <div class="detalle-section">
+                            <h4><i class="fas fa-file-alt"></i> Descripción</h4>
+                            <p>La dermatitis atópica es una condición crónica de la piel que causa inflamación, enrojecimiento y picazón intensa. Es más común en niños pero puede afectar a personas de cualquier edad. Se caracteriza por períodos de brotes y remisiones.</p>
+                        </div>
+                        
+                        <div class="detalle-section">
+                            <h4><i class="fas fa-heartbeat"></i> Síntomas Asociados</h4>
+                            <div class="sintomas-grid">
+                                <div class="sintoma-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    Picazón intensa
+                                </div>
+                                <div class="sintoma-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    Enrojecimiento
+                                </div>
+                                <div class="sintoma-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    Sequedad de piel
+                                </div>
+                                <div class="sintoma-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    Descamación
+                                </div>
+                                <div class="sintoma-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    Inflamación
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="detalle-section">
+                            <h4><i class="fas fa-pills"></i> Tratamiento Recomendado</h4>
+                            <ul class="tratamiento-list">
+                                <li>Aplicar cremas hidratantes varias veces al día</li>
+                                <li>Usar corticosteroides tópicos según prescripción médica</li>
+                                <li>Evitar baños con agua muy caliente</li>
+                                <li>Identificar y evitar desencadenantes (alergenos, estrés)</li>
+                                <li>Mantener las uñas cortas para evitar lesiones por rascado</li>
+                                <li>Considerar antihistamínicos para controlar la picazón</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="detalle-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Zona afectada: Rostro, Extremidades</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>Última actualización: 15/10/2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div id="toast" class="toast"></div>
+    <script src="js/common.js"></script>
+    <script src="js/afeccion-detalle-api.js"></script>
+</body>
+</html>

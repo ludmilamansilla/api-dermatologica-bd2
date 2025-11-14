@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import fs from 'fs';
+import 'dotenv/config';
 
 // Inicializar el cliente de manera lazy (solo cuando se necesite)
 let genAI = null;
@@ -6,12 +8,12 @@ let genAI = null;
 const initGenAI = () => {
     if (!genAI && process.env.GOOGLE_API_KEY) {
         genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-        console.log('🔑 Cliente Gemini inicializado');
+        console.log('Cliente Gemini inicializado');
     }
     return genAI;
 };
 
-// Obtener modelo Gemini 2.5 Flash (el más rápido y moderno)
+// Obtener modelo Gemini
 const getModel = () => {
     const client = initGenAI();
     if (!client) {
@@ -20,166 +22,115 @@ const getModel = () => {
     return client.getGenerativeModel({ model: 'gemini-2.5-flash' });
 };
 
-// Analizar síntomas y sugerir diagnósticos
-export const analizarSintomas = async (sintomas, zonaAfectada) => {
+function archivoAparte(ruta, mimeType) {
+    if (!fs.existsSync(ruta)) {
+        throw new Error(`Archivo no encontrado en la ruta: ${ruta}`); 
+    }
+    const datosBinarios = fs.readFileSync(ruta);
+    const base64Data = datosBinarios.toString('base64');
+    
+    return {
+        inlineData: {
+            data: base64Data,
+            mimeType,
+        },
+    };
+}
+
+// Objeto de respuesta por defecto en caso de error total
+const getErrorResponse = (message = 'No se pudo realizar un análisis detallado.') => ({
+    diagnosticoIA: 'Análisis no disponible',
+    explicacion: message,
+    recomendaciones: [
+        'Mantener la zona limpia y seca',
+        'Evitar rascar o irritar la zona',
+        'Consultar con un dermatólogo para una evaluación profesional'
+    ],
+    urgencia: 'indeterminada',
+    advertencia: 'Esta es una orientación general. Consulte a un profesional médico para un diagnóstico preciso.'
+});
+
+// --- FUNCIÓN UNIFICADA DE ANÁLISIS ---
+export const analizarImagenDermatologica = async ({ sintomas, zonaAfectada, rutaImagen }) => {
     try {
-        // Validar API key
-        const apiKey = process.env.GOOGLE_API_KEY;
-        
-        console.log('🔍 Verificando API key...');
-        console.log('   API key existe:', !!apiKey);
-        console.log('   Longitud:', apiKey ? apiKey.length : 0);
-        
-        if (!apiKey || apiKey === 'tu-api-key-de-google') {
-            console.log('⚠️ API key de Gemini no configurada, usando análisis básico');
-            return null;
+        if (!process.env.GOOGLE_API_KEY || process.env.GOOGLE_API_KEY === 'tu-api-key-de-google') {
+            console.log('API key no configurada para análisis de imagen');
+            return getErrorResponse('API key de Gemini no configurada.');
         }
-        
-        console.log('🤖 Iniciando análisis con Gemini 2.5 Flash...');
-        console.log('📝 Síntomas a analizar:', sintomas);
-        console.log('📍 Zona:', zonaAfectada);
 
         const model = getModel();
-        
-        const prompt = `Eres un asistente médico especializado en dermatología. 
-        
-Analiza los siguientes síntomas dermatológicos:
-- Zona afectada: ${zonaAfectada}
-- Síntomas reportados: ${sintomas.join(', ')}
+        let prompt;
+        const parts = [];
 
-Proporciona un análisis médico profesional con:
-1. Una explicación clara de qué podrían indicar estos síntomas (2-3 oraciones)
-2. Tres a cuatro recomendaciones específicas de cuidado
-3. Nivel de urgencia: bajo, medio o alto
-4. Un mensaje de advertencia sobre consulta médica
+        // 1. Decidir el tipo de análisis (con o sin imagen)
+        if (rutaImagen) {
+            console.log('Iniciando análisis multimodal (imagen + texto)...');
+            let mimeType = 'image/jpeg';
+            if (rutaImagen.toLowerCase().endsWith('.png')) mimeType = 'image/png';
 
-Responde ÚNICAMENTE con un objeto JSON válido en este formato exacto (sin markdown):
-{
-    "explicacion": "Explicación médica de los síntomas",
-    "recomendaciones": ["Recomendación 1", "Recomendación 2", "Recomendación 3"],
-    "urgencia": "bajo",
-    "advertencia": "Esta información es referencial. Consulte con un dermatólogo profesional para un diagnóstico preciso y tratamiento adecuado."
-}`;
+            const imagePart = archivoAparte(rutaImagen, mimeType);
+            
+            prompt = `Eres un asistente médico especializado en dermatología. Analiza la imagen y los datos del paciente. Responde EXACTAMENTE con un JSON válido (sin markdown) con este formato:
+            {
+                "diagnosticoIA": "diagnóstico probable (2-4 frases)",
+                "explicacion": "Explicación detallada del diagnóstico basada en la imagen y síntomas",
+                "recomendaciones": ["Recomendación 1", "Recomendación 2", "Recomendación 3"],
+                "urgencia": "bajo",
+                "advertencia": "Esta información es referencial. Consulte con un dermatólogo profesional para un diagnóstico preciso y tratamiento adecuado."
+            }
+            ---
+            DATOS DEL PACIENTE:
+            - Zona afectada: ${zonaAfectada}
+            - Síntomas reportados: ${Array.isArray(sintomas) ? sintomas.join(', ') : sintomas}`;
+            
+            parts.push(prompt, imagePart);
 
-        const result = await model.generateContent(prompt);
+        } else {
+            console.log('Iniciando análisis de solo texto...');
+            prompt = `Eres un asistente médico especializado en dermatología. Analiza los datos del paciente. Responde EXACTAMENTE con un JSON válido (sin markdown) con este formato:
+            {
+                "diagnosticoIA": "diagnóstico probable basado en síntomas (2-4 frases)",
+                "explicacion": "Explicación detallada del diagnóstico basada en los síntomas reportados",
+                "recomendaciones": ["Recomendación 1", "Recomendación 2", "Recomendación 3"],
+                "urgencia": "medio",
+                "advertencia": "Esta información es referencial. Consulte con un dermatólogo profesional para un diagnóstico preciso y tratamiento adecuado."
+            }
+            ---
+            DATOS DEL PACIENTE:
+            - Zona afectada: ${zonaAfectada}
+            - Síntomas reportados: ${Array.isArray(sintomas) ? sintomas.join(', ') : sintomas}`;
+
+            parts.push(prompt);
+        }
+
+        // 2. Ejecutar la llamada a la IA
+        const result = await model.generateContent(parts);
         const response = await result.response;
         const text = response.text();
         
-        console.log('📥 Respuesta de Gemini recibida');
-        
-        // Intentar parsear como JSON
+        console.log('Respuesta de Gemini recibida.');
+
+        // 3. Parsear la respuesta (con fallback si el parseo falla)
         try {
-            // Limpiar markdown si existe (```json y ```)
-            let cleanText = text
-                .replace(/```json\n?/g, '')
-                .replace(/```\n?/g, '')
-                .trim();
-            
+            let cleanText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
             const parsed = JSON.parse(cleanText);
-            
-            console.log('✅ Análisis IA parseado correctamente');
-            console.log('📊 Urgencia:', parsed.urgencia);
-            console.log('💡 Recomendaciones:', parsed.recomendaciones.length);
-            
+            console.log('Análisis IA parseado correctamente.');
             return parsed;
         } catch (parseError) {
-            console.log('⚠️ Error parseando JSON:', parseError.message);
-            console.log('📝 Texto recibido:', text.substring(0, 200));
-            
-            // Si no es JSON válido, crear estructura a partir del texto
-            return {
-                explicacion: text.substring(0, 500),
-                recomendaciones: [
-                    'Mantener la zona afectada limpia y seca',
-                    'Evitar rascar o irritar la zona',
-                    'Consultar con un dermatólogo para evaluación profesional'
-                ],
-                urgencia: 'medio',
-                advertencia: 'Esta es una orientación general. Consulte a un profesional médico para un diagnóstico preciso.'
-            };
+            console.error('Error parseando JSON de Gemini:', parseError.message);
+            console.log('Texto recibido:', text);
+            return getErrorResponse('La respuesta del análisis no tuvo un formato válido.');
         }
+
     } catch (error) {
-        console.error('❌ Error en análisis con Gemini AI:', error.message);
-        console.error('   Stack:', error.stack);
+        console.error('Error en el servicio de análisis de Gemini:', error.message);
         
-        if (error.message.includes('API key')) {
-            console.error('❌ Problema con la API key de Google');
-            console.error('   Valor actual:', process.env.GOOGLE_API_KEY ? 'existe' : 'no existe');
+        // Si el error es por sobrecarga del modelo (503), devuelve un mensaje amigable.
+        if (error.message.includes('503') || error.message.toLowerCase().includes('overloaded')) {
+            return getErrorResponse('El servicio de análisis está sobrecargado. Por favor, inténtalo de nuevo más tarde.');
         }
         
-        if (error.message.includes('not found') || error.message.includes('404')) {
-            console.error('❌ Modelo no encontrado - verifica que gemini-2.5-flash esté disponible');
-        }
-        
-        return null;
+        // Para cualquier otro error, devuelve un mensaje genérico sin exponer detalles.
+        return getErrorResponse('No se pudo completar el análisis debido a un error inesperado.');
     }
 };
-
-// Generar descripción para una afección
-export const generarDescripcionAfeccion = async (nombre, sintomas) => {
-    try {
-        if (!process.env.GOOGLE_API_KEY || process.env.GOOGLE_API_KEY === 'tu-api-key-de-google') {
-            return null;
-        }
-
-        console.log('📝 Generando descripción para:', nombre);
-        const model = getModel();
-        
-        const prompt = `Genera una descripción médica breve (2-3 párrafos) sobre la afección dermatológica "${nombre}".
-        
-Síntomas asociados: ${sintomas.join(', ')}
-
-La descripción debe ser:
-- Clara y profesional
-- Incluir causas comunes
-- Mencionar población afectada
-- Máximo 300 palabras`;
-
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
-        
-        console.log('✅ Descripción generada');
-        return text;
-    } catch (error) {
-        console.error('❌ Error generando descripción:', error.message);
-        return null;
-    }
-};
-
-// Sugerir tratamiento
-export const sugerirTratamiento = async (afeccion, severidad) => {
-    try {
-        if (!process.env.GOOGLE_API_KEY || process.env.GOOGLE_API_KEY === 'tu-api-key-de-google') {
-            return null;
-        }
-
-        console.log('💊 Generando tratamiento para:', afeccion, '- Severidad:', severidad);
-        const model = getModel();
-        
-        const prompt = `Sugiere un plan de tratamiento general para:
-        
-Afección: ${afeccion}
-Severidad: ${severidad}
-
-Incluye:
-1. Medidas de cuidado inmediato (2-3 puntos)
-2. Tratamientos tópicos comunes
-3. Cuándo buscar atención médica urgente
-4. Prevención
-
-Responde en formato de lista clara y concisa.`;
-
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
-        
-        console.log('✅ Tratamiento generado');
-        return text;
-    } catch (error) {
-        console.error('❌ Error sugiriendo tratamiento:', error.message);
-        return null;
-    }
-};
-
-export default { analizarSintomas, analizarSintomasConImagen, generarDescripcionAfeccion, sugerirTratamiento };

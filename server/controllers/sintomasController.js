@@ -1,5 +1,6 @@
 import Sintoma from '../models/Sintoma.js';
 
+// Obtener todos los síntomas con filtros opcionales
 export const getSintomas = async (req, res) => {
     try {
         const { search, zona } = req.query;
@@ -36,9 +37,7 @@ export const getSintomas = async (req, res) => {
     }
 };
 
-// @desc    Obtener un síntoma por ID
-// @route   GET /api/sintomas/:id
-// @access  Private
+// Obtener síntoma por ID
 export const getSintomaById = async (req, res) => {
     try {
         const sintoma = await Sintoma.findById(req.params.id);
@@ -63,6 +62,8 @@ export const getSintomaById = async (req, res) => {
     }
 };
 
+
+// Crear síntoma
 export const createSintoma = async (req, res) => {
     try {
         const { nombre, descripcion, zona } = req.body;
@@ -104,6 +105,7 @@ export const createSintoma = async (req, res) => {
     }
 };
 
+// Actualizar síntoma
 export const updateSintoma = async (req, res) => {
     try {
         const sintoma = await Sintoma.findById(req.params.id);
@@ -136,6 +138,7 @@ export const updateSintoma = async (req, res) => {
     }
 };
 
+// Eliminar síntoma físicamente
 export const deleteSintoma = async (req, res) => {
     try {
         const sintoma = await Sintoma.findById(req.params.id);
@@ -161,7 +164,7 @@ export const deleteSintoma = async (req, res) => {
             message: 'Síntoma eliminado exitosamente de la base de datos'
         });
     } catch (error) {
-        console.error('❌ Error eliminando síntoma:', error);
+        console.error('Error eliminando síntoma:', error);
         res.status(500).json({ 
             success: false,
             message: 'Error eliminando síntoma: ' + error.message 

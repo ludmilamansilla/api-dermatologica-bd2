@@ -10,12 +10,11 @@ export const seedDatabase = async () => {
         const afeccionCount = await Afeccion.countDocuments();
 
         if (usuarioCount > 0 || sintomaCount > 0 || afeccionCount > 0) {
-            console.log('📊 La base de datos ya contiene datos');
+            console.log('La base de datos ya contiene datos');
             return;
         }
 
-        console.log('🌱 Iniciando seed de la base de datos...');
-
+        console.log('Iniciando seed de la base de datos...');
 
         // Crear usuario alumno
         const alumno = await Usuario.create({
@@ -24,7 +23,7 @@ export const seedDatabase = async () => {
             role: 'alumno'
         });
 
-        console.log('✅ Usuarios creados');
+        console.log('Usuario creado');
 
         // Crear síntomas
         const sintomas = await Sintoma.insertMany([
@@ -45,7 +44,7 @@ export const seedDatabase = async () => {
             { nombre: 'Grietas', descripcion: 'Fisuras en la piel', zona: 'todas' }
         ]);
 
-        console.log('✅ Síntomas creados');
+        console.log('Síntomas creados');
 
         // Crear afecciones
         const afecciones = await Afeccion.insertMany([
@@ -131,8 +130,8 @@ export const seedDatabase = async () => {
             }
         ]);
 
-        console.log('✅ Afecciones creadas');
-        console.log(`✨ Seed completado: ${usuarioCount} usuarios, ${sintomas.length} síntomas, ${afecciones.length} afecciones`);
+        console.log('Afecciones creadas');
+        console.log(`Seed completado: ${usuarioCount} usuarios, ${sintomas.length} síntomas, ${afecciones.length} afecciones`);
 
     } catch (error) {
         console.error('Error en seed:', error);

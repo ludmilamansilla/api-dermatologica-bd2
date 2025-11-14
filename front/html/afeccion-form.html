@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Afección - DermaTech</title>
+    <link rel="icon" type="image/svg+xml" href="/heartbeat.svg">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/form.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <div class="logo-nav">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>DermaTech</span>
+                </div>
+            </div>
+            <div class="navbar-center">
+                <h1 class="navbar-title" id="formTitle">Nueva Afección</h1>
+            </div>
+            <div class="navbar-right">
+                <div class="user-menu">
+                    <div class="user-avatar"><i class="fas fa-user-md"></i></div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Alumno</span>
+                        <span class="user-role">Usuario</span>
+                    </div>
+                    <button class="btn-logout" id="logoutBtn" title="Cerrar sesión">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="container" style="max-width: 900px;">
+            <nav class="breadcrumb">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <span>/</span>
+                <a href="afecciones.html">Afecciones</a>
+                <span>/</span>
+                <span>Nueva Afección</span>
+            </nav>
+            
+            <div class="card form-card">
+                <form id="afeccionForm">
+                    <div class="row">
+                        <div class="col col-12">
+                            <div class="form-group">
+                                <label class="form-label" for="nombre">
+                                    Nombre de la Afección <span class="required">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="nombre" 
+                                    placeholder="Ej: Dermatitis Atópica"
+                                    required
+                                >
+                                <span class="form-error" id="nombreError"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col col-6">
+                            <div class="form-group">
+                                <label class="form-label" for="severidad">
+                                    Severidad <span class="required">*</span>
+                                </label>
+                                <select class="form-control" id="severidad" required>
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="leve">Leve</option>
+                                    <option value="moderada">Moderada</option>
+                                    <option value="grave">Grave</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col col-6">
+                            <div class="form-group">
+                                <label class="form-label" for="zona">Zona Afectada</label>
+                                <select class="form-control" id="zona">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="rostro">Rostro</option>
+                                    <option value="tronco">Tronco</option>
+                                    <option value="extremidades">Extremidades</option>
+                                    <option value="cuero-cabelludo">Cuero cabelludo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="descripcion">
+                            Descripción Detallada <span class="required">*</span>
+                        </label>
+                        <textarea 
+                            class="form-control" 
+                            id="descripcion" 
+                            rows="5"
+                            placeholder="Describa la afección, sus características principales, síntomas comunes..."
+                            required
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Imagen de la Afección
+                            <span style="font-size: 0.85rem; color: var(--color-text-light); font-weight: normal;">
+                                (Opcional - PNG, JPG hasta 5MB)
+                            </span>
+                        </label>
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="imagen" name="imagen" accept="image/*" hidden>
+                            <div class="upload-content">
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <p class="upload-text">Arrastra una imagen aquí o haz clic para seleccionar</p>
+                                <p class="upload-hint">Formatos: PNG, JPG, JPEG - Máximo 5MB</p>
+                            </div>
+                        </div>
+                        <div class="image-preview" id="imagePreview" style="display: none;">
+                            <img id="previewImg" src="" alt="Preview" style="max-width: 100%; border-radius: 8px;">
+                            <button type="button" class="btn btn-sm btn-danger" id="btnRemoveImage" style="margin-top: 1rem;">
+                                <i class="fas fa-times"></i> Eliminar imagen
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="sintomas">Síntomas Asociados</label>
+                        <div class="sintomas-selector">
+                            <div class="sintomas-search">
+                                <i class="fas fa-search"></i>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="sintomasSearch" 
+                                    placeholder="Buscar síntomas..."
+                                >
+                            </div>
+                            <div class="sintomas-list" id="sintomasList">
+                                <label class="sintoma-item">
+                                    <input type="checkbox" value="picazon">
+                                    <span>Picazón intensa</span>
+                                </label>
+                                <label class="sintoma-item">
+                                    <input type="checkbox" value="enrojecimiento">
+                                    <span>Enrojecimiento</span>
+                                </label>
+                                <label class="sintoma-item">
+                                    <input type="checkbox" value="sequedad">
+                                    <span>Sequedad de piel</span>
+                                </label>
+                                <label class="sintoma-item">
+                                    <input type="checkbox" value="descamacion">
+                                    <span>Descamación</span>
+                                </label>
+                                <label class="sintoma-item">
+                                    <input type="checkbox" value="inflamacion">
+                                    <span>Inflamación</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="selected-sintomas" id="selectedSintomas"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="tratamiento">Tratamiento Recomendado</label>
+                        <textarea 
+                            class="form-control" 
+                            id="tratamiento" 
+                            rows="4"
+                            placeholder="Describa el tratamiento recomendado para esta afección..."
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="window.history.back()">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-accent">
+                            <i class="fas fa-save"></i>
+                            Guardar Afección
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <div id="toast" class="toast"></div>
+    <script src="js/common.js"></script>
+    <script src="js/afeccion-form-api.js"></script>
+</body>
+</html>

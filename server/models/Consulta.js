@@ -9,7 +9,7 @@ const consultaSchema = new mongoose.Schema({
     zonaAfectada: {
         type: String,
         required: [true, 'La zona afectada es requerida'],
-        enum: ['rostro', 'cuello', 'torax', 'abdomen', 'brazos', 'piernas', 'manos', 'pies']
+        enum: ['rostro', 'cuello', 'torax', 'abdomen', 'espalda', 'brazos', 'piernas', 'manos', 'pies']
     },
     imagenZona: {
         type: String, // URL o ruta de la imagen

@@ -1,16 +1,20 @@
 import Consulta from '../models/Consulta.js';
 import Afeccion from '../models/Afeccion.js';
 import Sintoma from '../models/Sintoma.js';
-import { analizarSintomas, analizarImagenDermatologica } from '../services/geminiService.js';
+import { analizarImagenDermatologica } from '../services/geminiService.js';
 
-// Función para calcular coincidencias
+// Función para calcular coincidencias usando similitud de Jaccard
 const calcularCoincidencias = (sintomasReportados, sintomasAfeccion) => {
     const reportadosSet = new Set(sintomasReportados.map(s => s.toString()));
-    const coincidentes = sintomasAfeccion.filter(s => reportadosSet.has(s.toString()));
+    const afeccionSet = new Set(sintomasAfeccion.map(s => s.toString()));
     
-    const porcentaje = sintomasAfeccion.length > 0 
-        ? (coincidentes.length / sintomasAfeccion.length) * 100 
-        : 0;
+    // Calcular intersección
+    const coincidentes = sintomasAfeccion.filter(s => reportadosSet.has(s.toString()));
+    const interseccion = coincidentes.length;
+    
+    // Similitud de Jaccard: intersección / unión
+    const union = reportadosSet.size + afeccionSet.size - interseccion;
+    const porcentaje = union > 0 ? (interseccion / union) * 100 : 0;
     
     return {
         sintomasCoincidentes: coincidentes,
@@ -18,6 +22,7 @@ const calcularCoincidencias = (sintomasReportados, sintomasAfeccion) => {
     };
 };
 
+// Crear nueva consulta
 export const createConsulta = async (req, res) => {
     try {
         const { nombrePaciente, zonaAfectada, sintomasReportados, notas } = req.body;
@@ -72,89 +77,42 @@ export const createConsulta = async (req, res) => {
         let notasFinales = notas || '';
         
         try {
-            // Obtener nombres de síntomas
+            // Obtener nombres de síntomas para el análisis
             const sintomasNombres = await Sintoma.find({ 
                 _id: { $in: sintomasArray } 
             }).select('nombre');
             
             const nombres = sintomasNombres.map(s => s.nombre);
+
+            console.log('Iniciando análisis IA unificado...');
             
-            console.log('Síntomas para análisis IA:', nombres);
-            console.log('Zona afectada:', zonaAfectada);
+            // Llamada al servicio de IA. 
+            analisisIA = await analizarImagenDermatologica({
+                sintomas: nombres,
+                zonaAfectada,
+                rutaImagen: req.file ? `./uploads/${req.file.filename}` : null
+            });
+
+            console.log('Análisis con Gemini AI completado.');
+            console.log('Diagnóstico:', analisisIA.diagnosticoIA);
             
-            // Si hay imagen, usar análisis con visión
-            if (req.file) {
-                console.log('📸 Imagen detectada, usando análisis con visión...');
-                const rutaImagen = `./uploads/${req.file.filename}`;
-                
-                // Obtener todas las afecciones para contexto
-                const todasAfecciones = await Afeccion.find({ activo: true }).select('nombre descripcion severidad');
-                
-                analisisIA = await analizarImagenDermatologica(
-                    rutaImagen,
-                    nombres, 
-                    zonaAfectada, 
-                    todasAfecciones
-                );
-                
-                if (analisisIA) {
-                    console.log('✅ Análisis con visión completado');
-                    console.log('   Diagnóstico IA:', analisisIA.diagnosticoIA);
-                    console.log('   Confianza:', analisisIA.confianza);
-                }
-            } else {
-                // Sin imagen, usar análisis solo de texto
-                console.log('📝 Sin imagen, usando análisis de texto...');
-                analisisIA = await analizarSintomas(nombres, zonaAfectada);
-            }
-            
-            if (analisisIA) {
-                console.log('Análisis con Gemini AI completado exitosamente');
-                console.log('Urgencia detectada:', analisisIA.urgencia);
-                
-                // Agregar análisis IA a las notas
-                notasFinales += '\n\n--- Análisis IA ---\n';
-                
-                // Si hay análisis visual, agregarlo
-                if (analisisIA.diagnosticoIA) {
-                    notasFinales += '\n🔍 Análisis Visual:\n';
-                    notasFinales += `${analisisIA.diagnosticoIA}\n\n`;
-                    notasFinales += `Confianza del diagnóstico: ${analisisIA.confianza}\n\n`;
-                }
-                
-                notasFinales += `${analisisIA.explicacion}\n\n`;
-                notasFinales += 'Recomendaciones:\n';
+            // Formatear notas (la estructura de analisisIA ahora es consistente)
+            notasFinales += '\n\n--- Análisis IA ---\n';
+            notasFinales += `Diagnóstico: ${analisisIA.diagnosticoIA}\n\n`;
+            notasFinales += `Explicación: ${analisisIA.explicacion}\n\n`;
+            notasFinales += 'Recomendaciones:\n';
+            if (Array.isArray(analisisIA.recomendaciones)) {
                 analisisIA.recomendaciones.forEach((rec, i) => {
                     notasFinales += `${i + 1}. ${rec}\n`;
                 });
-                notasFinales += `\nUrgencia: ${analisisIA.urgencia}\n\n`;
-                notasFinales += analisisIA.advertencia;
-            } else {
-                console.log('No se obtuvo análisis IA - Generando análisis básico');
-                
-                // Análisis básico sin IA
-                notasFinales += '\n\n--- Análisis Clínico ---\n';
-                notasFinales += `Se han identificado los siguientes síntomas en la zona ${zonaAfectada}: ${nombres.join(', ')}.\n\n`;
-                notasFinales += 'Recomendaciones generales:\n';
-                notasFinales += '1. Mantener la zona limpia y seca\n';
-                notasFinales += '2. Evitar rascar o irritar el área afectada\n';
-                notasFinales += '3. Aplicar tratamiento según indicación médica\n';
-                notasFinales += '4. Consultar con un dermatólogo si los síntomas persisten\n\n';
-                
-                // Determinar urgencia básica
-                const urgenciaBasica = nombres.some(n => 
-                    n.toLowerCase().includes('dolor') || 
-                    n.toLowerCase().includes('sangr') || 
-                    n.toLowerCase().includes('pus')
-                ) ? 'ALTA' : 'MEDIA';
-                
-                notasFinales += `Urgencia estimada: ${urgenciaBasica}\n\n`;
-                notasFinales += 'IMPORTANTE: Esta es una evaluación automática básica. Se recomienda consultar con un profesional de la salud para un diagnóstico preciso y tratamiento adecuado.';
             }
+            notasFinales += `\nUrgencia: ${analisisIA.urgencia}\n\n`;
+            notasFinales += analisisIA.advertencia;
+
         } catch (error) {
-            console.error('Error al obtener análisis:', error.message);
-            // Agregar nota simple si hay error
-            notasFinales += '\n\nIMPORTANTE: Consulte con un dermatólogo profesional para evaluación y tratamiento.';
+            console.error('Error crítico durante el análisis IA:', error.message);
+            notasFinales += '\n\n--- Análisis IA (Error) ---\n';
+            notasFinales += 'No se pudo completar el análisis por inteligencia artificial debido a un error. Se recomienda encarecidamente la consulta con un profesional médico.';
         }
 
         // Crear consulta
@@ -199,6 +157,7 @@ export const createConsulta = async (req, res) => {
     }
 };
 
+// Obtener lista de consultas con paginación y búsqueda
 export const getConsultas = async (req, res) => {
     try {
         const { page = 1, limit = 10, search } = req.query;
@@ -239,6 +198,7 @@ export const getConsultas = async (req, res) => {
     }
 };
 
+// Obtener consulta por ID
 export const getConsultaById = async (req, res) => {
     try {
         const consulta = await Consulta.findById(req.params.id)
@@ -282,6 +242,7 @@ export const getConsultaById = async (req, res) => {
     }
 };
 
+// Obtener últimas consultas del usuario
 export const getConsultasRecientes = async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 5;
@@ -304,6 +265,7 @@ export const getConsultasRecientes = async (req, res) => {
     }
 };
 
+// Eliminar consulta por ID
 export const deleteConsulta = async (req, res) => {
     try {
         const consulta = await Consulta.findById(req.params.id);
@@ -330,14 +292,14 @@ export const deleteConsulta = async (req, res) => {
         // Eliminación física de la base de datos
         await Consulta.findByIdAndDelete(req.params.id);
 
-        console.log(`✅ Consulta eliminada físicamente de MongoDB: Paciente "${nombrePaciente}" (ID: ${consultaId})`);
+        console.log(`Consulta eliminada físicamente de MongoDB: Paciente "${nombrePaciente}" (ID: ${consultaId})`);
 
         res.json({
             success: true,
             message: 'Consulta eliminada exitosamente de la base de datos'
         });
     } catch (error) {
-        console.error('❌ Error eliminando consulta:', error);
+        console.error('Error eliminando consulta:', error);
         res.status(500).json({ 
             success: false,
             message: 'Error eliminando consulta: ' + error.message 
