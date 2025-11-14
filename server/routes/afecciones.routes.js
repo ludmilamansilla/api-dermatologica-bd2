@@ -7,7 +7,7 @@ import {
     deleteAfeccion
 } from '../controllers/afeccionesController.js';
 import { proteger } from '../middleware/auth.js';
-import upload from '../middleware/upload.js';
+import upload from '../middleware/upload-cloudinary.js';
 
 const router = express.Router();
 

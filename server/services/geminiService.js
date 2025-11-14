@@ -22,6 +22,7 @@ const getModel = () => {
     return client.getGenerativeModel({ model: 'gemini-2.5-flash' });
 };
 
+// Función para procesar imagen desde ruta de archivo
 function archivoAparte(ruta, mimeType) {
     if (!fs.existsSync(ruta)) {
         throw new Error(`Archivo no encontrado en la ruta: ${ruta}`); 
@@ -35,6 +36,36 @@ function archivoAparte(ruta, mimeType) {
             mimeType,
         },
     };
+}
+
+// Función para procesar imagen desde Buffer (para Cloudinary)
+function bufferToImagePart(buffer, mimeType) {
+    const base64Data = buffer.toString('base64');
+    return {
+        inlineData: {
+            data: base64Data,
+            mimeType,
+        },
+    };
+}
+
+// Función para detectar mimeType desde buffer
+function detectMimeType(buffer) {
+    // Detectar tipo de imagen por magic numbers
+    if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
+        return 'image/jpeg';
+    }
+    if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
+        return 'image/png';
+    }
+    if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46) {
+        return 'image/gif';
+    }
+    if (buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50) {
+        return 'image/webp';
+    }
+    // Por defecto JPEG
+    return 'image/jpeg';
 }
 
 // Objeto de respuesta por defecto en caso de error total
@@ -65,10 +96,23 @@ export const analizarImagenDermatologica = async ({ sintomas, zonaAfectada, ruta
         // 1. Decidir el tipo de análisis (con o sin imagen)
         if (rutaImagen) {
             console.log('Iniciando análisis multimodal (imagen + texto)...');
-            let mimeType = 'image/jpeg';
-            if (rutaImagen.toLowerCase().endsWith('.png')) mimeType = 'image/png';
-
-            const imagePart = archivoAparte(rutaImagen, mimeType);
+            
+            let imagePart;
+            let mimeType;
+            
+            // Detectar si es un Buffer (de Cloudinary) o una ruta de archivo
+            if (Buffer.isBuffer(rutaImagen)) {
+                // Es un buffer, detectar mimeType y convertir
+                mimeType = detectMimeType(rutaImagen);
+                imagePart = bufferToImagePart(rutaImagen, mimeType);
+            } else if (typeof rutaImagen === 'string') {
+                // Es una ruta de archivo
+                mimeType = 'image/jpeg';
+                if (rutaImagen.toLowerCase().endsWith('.png')) mimeType = 'image/png';
+                imagePart = archivoAparte(rutaImagen, mimeType);
+            } else {
+                throw new Error('Formato de imagen no soportado');
+            }
             
             prompt = `Eres un asistente médico especializado en dermatología. Analiza la imagen y los datos del paciente. Responde EXACTAMENTE con un JSON válido (sin markdown) con este formato:
             {
