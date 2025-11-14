@@ -2,6 +2,11 @@ import Consulta from '../models/Consulta.js';
 import Afeccion from '../models/Afeccion.js';
 import Sintoma from '../models/Sintoma.js';
 import { analizarImagenDermatologica } from '../services/geminiService.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Función para calcular coincidencias usando similitud de Jaccard
 const calcularCoincidencias = (sintomasReportados, sintomasAfeccion) => {
@@ -86,11 +91,16 @@ export const createConsulta = async (req, res) => {
 
             console.log('Iniciando análisis IA unificado...');
             
+            // Construir ruta absoluta a la imagen
+            const rutaImagen = req.file 
+                ? path.join(__dirname, '..', '..', 'front', 'public', 'uploads', req.file.filename)
+                : null;
+            
             // Llamada al servicio de IA. 
             analisisIA = await analizarImagenDermatologica({
                 sintomas: nombres,
                 zonaAfectada,
-                rutaImagen: req.file ? `./uploads/${req.file.filename}` : null
+                rutaImagen
             });
 
             console.log('Análisis con Gemini AI completado.');

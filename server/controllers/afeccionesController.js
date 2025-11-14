@@ -1,6 +1,10 @@
 import Afeccion from '../models/Afeccion.js';
 import path from 'path';
 import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const getAfecciones = async (req, res) => {
     try {
@@ -152,7 +156,8 @@ export const updateAfeccion = async (req, res) => {
         // Si hay nueva imagen, eliminar la anterior y guardar la nueva
         if (req.file) {
             if (afeccion.imagen) {
-                const imagenPath = path.join(process.cwd(), afeccion.imagen);
+                // Construir ruta absoluta correcta a la imagen antigua
+                const imagenPath = path.join(__dirname, '..', '..', 'front', 'public', afeccion.imagen);
                 try {
                     await fs.unlink(imagenPath);
                 } catch (err) {
